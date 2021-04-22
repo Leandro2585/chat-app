@@ -1,11 +1,11 @@
-import {MigrationInterface, QueryRunner, Table} from 'typeorm';
+import {MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
-export class CreateMessages1619036708138 implements MigrationInterface {
+export class CreateConnections1619119801778 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
       await queryRunner.createTable(
         new Table({
-          name: "messages",
+          name: "connections",
           columns: [
             {
               name: "id",
@@ -22,32 +22,39 @@ export class CreateMessages1619036708138 implements MigrationInterface {
               type: "uuid"
             },
             {
-              name: "text",
+              name: "socket_id",
               type: "varchar"
             },
             {
               name: "created_at",
               type: "timestamp",
               default: "now()"
-            }
-          ],
-          foreignKeys: [
+            },
             {
-              name: "fk_user",
+              name: "updated_at",
+              type: "timestamp",
+              default: "now()"
+            }
+          ]
+
+          await queryRunner.createForeignKey(
+            "connections",
+            new TableForeignKey({
+              name: "fk_connection_user",
               referencedTableName: "users",
               referencedColumnNames: ["id"],
               columnNames: ["user_id"],
               onDelete: "SET NULL",
               onUpdate: "SET NULL"
-            }
-          ]
+            })
+          )
         })
       )
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-      await queryRunner.dropTable("messages")
-
+      await queryRunner.dropForeignKey("connections", "fk_connection_user")
+      await queryRunner.dropTable("connections")
     }
 
 }

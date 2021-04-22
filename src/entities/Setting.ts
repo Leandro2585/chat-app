@@ -1,4 +1,6 @@
 import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import User from './User'
+
 import { v4 as uuid } from 'uuid'
 
 @Entity("settings")
